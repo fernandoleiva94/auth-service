@@ -1,0 +1,11 @@
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/service/JwtService.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/entity/User.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/controller/AuthController.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/entity/Role.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/entity/AuthRequest.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/repository/UserRepository.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/repository/RoleRepository.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/configuration/SecurityConfig.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/AuthServiceApplication.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/service/UserService.java
+/home/fernando/Desktop/SERVICIOS SEVEN-B/QAS/auth-service/src/main/java/com/sevenb/auth/auth_service/configuration/JwtAuthenticationFilter.java
