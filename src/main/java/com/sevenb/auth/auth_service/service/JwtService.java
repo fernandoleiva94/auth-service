@@ -1,5 +1,6 @@
 package com.sevenb.auth.auth_service.service;
 
+import com.sevenb.auth.auth_service.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,7 +13,6 @@ import java.util.Date;
 import java.util.function.Function;
 
 
-
 @Service
 public class JwtService {
 
@@ -22,9 +22,12 @@ public class JwtService {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User userDetails, Long userId) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .claim("id", userId)
+                .claim("name",userDetails.getPerson().getFirstName() + " " + userDetails.getPerson().getLastName())
+                .claim("user",userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Expira en 1 hora
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
