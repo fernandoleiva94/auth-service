@@ -71,5 +71,9 @@ public class User implements UserDetails {
         return true;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
 
 }
