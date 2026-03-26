@@ -28,6 +28,8 @@ public class JwtService {
                 .claim("id", userId)
                 .claim("name",userDetails.getPerson().getFirstName() + " " + userDetails.getPerson().getLastName())
                 .claim("user",userDetails.getUsername())
+                .claim("ownerId",userDetails.getPerson().getId())
+                .claim("roleId",userDetails.getRole())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Expira en 1 hora
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

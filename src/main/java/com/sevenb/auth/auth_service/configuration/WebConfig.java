@@ -11,10 +11,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${auth.service.recipeFrontUtl}")
     private String recipeFrontUrl;
 
+    @Value("${auth.service.saleFrontUtl}")
+    private String saleFrontUrl;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/v1/auth/**") // Ajusta la ruta según sea necesario
-                .allowedOrigins(recipeFrontUrl)    // Ajusta esto si tu frontend está en otro lugar
+                .allowedOrigins(recipeFrontUrl,saleFrontUrl)    // Ajusta esto si tu frontend está en otro lugar
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
 }
