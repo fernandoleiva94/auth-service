@@ -29,6 +29,7 @@ public class JwtService {
                 .claim("name",userDetails.getPerson().getFirstName() + " " + userDetails.getPerson().getLastName())
                 .claim("user",userDetails.getUsername())
                 .claim("ownerId",userDetails.getPerson().getId())
+                .claim("tenantId", userDetails.getPerson().getTenantId())
                 .claim("roleId",userDetails.getRole())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Expira en 1 hora

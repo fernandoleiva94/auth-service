@@ -27,13 +27,12 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest authRequest) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+                Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
+                            authRequest.getPassword()));
 
             User user = (User) authentication.getPrincipal(); // 👈 Cast al tipo que tiene el id
             Long userId = user.getPerson().getId();
-
-
             return new AuthResponse(jwtService.generateToken(user, userId));
         } catch (AuthenticationException e) {
             throw new RuntimeException("Invalid credentials");

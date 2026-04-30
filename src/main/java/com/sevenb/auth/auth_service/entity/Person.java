@@ -35,6 +35,9 @@ public class Person {
     @Column(name = "tax_condition", nullable = false)
     private String taxCondition;
 
+    @Column(name = "tenant_id")
+    private String tenantId;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -44,7 +47,7 @@ public class Person {
     public Person() {
     }
 
-    public Person(Long id, String firstName, String lastName, String documentType, String documentNumber, String email, String phone, String address, String taxCondition, LocalDateTime createdAt, List<User> users) {
+    public Person(Long id, String firstName, String lastName, String documentType, String documentNumber, String email, String phone, String address, String taxCondition, String tenantId, LocalDateTime createdAt, List<User> users) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -54,6 +57,7 @@ public class Person {
         this.phone = phone;
         this.address = address;
         this.taxCondition = taxCondition;
+        this.tenantId = tenantId;
         this.createdAt = createdAt;
         this.users = users;
     }
@@ -128,6 +132,14 @@ public class Person {
 
     public void setTaxCondition(String taxCondition) {
         this.taxCondition = taxCondition;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public LocalDateTime getCreatedAt() {
