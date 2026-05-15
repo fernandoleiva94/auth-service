@@ -32,7 +32,7 @@ public class JwtService {
                 .claim("tenantId", userDetails.getPerson().getTenantId())
                 .claim("roleId",userDetails.getRole())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Expira en 1 hora
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 5)) // Expira en 1 hora
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
