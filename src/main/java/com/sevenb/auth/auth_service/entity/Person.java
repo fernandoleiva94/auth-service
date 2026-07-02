@@ -6,7 +6,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "people")
-
 public class Person {
 
     @Id
@@ -16,7 +15,7 @@ public class Person {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name")
     private String lastName;
 
     @Column(name = "document_type", nullable = false)
@@ -32,10 +31,10 @@ public class Person {
 
     private String address;
 
-    @Column(name = "tax_condition", nullable = false)
+    @Column(name = "tax_condition")
     private String taxCondition;
 
-    @Column(name = "tenant_id")
+    @Column(name = "tenant_id", nullable = false, unique = true)
     private String tenantId;
 
     @Column(name = "created_at")
@@ -44,117 +43,39 @@ public class Person {
     @OneToMany(mappedBy = "person")
     private List<User> users;
 
-    public Person() {
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Person(Long id, String firstName, String lastName, String documentType, String documentNumber, String email, String phone, String address, String taxCondition, String tenantId, LocalDateTime createdAt, List<User> users) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.documentType = documentType;
-        this.documentNumber = documentNumber;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.taxCondition = taxCondition;
-        this.tenantId = tenantId;
-        this.createdAt = createdAt;
-        this.users = users;
-    }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getDocumentType() { return documentType; }
+    public void setDocumentType(String documentType) { this.documentType = documentType; }
 
-    public String getFirstName() {
-        return firstName;
-    }
+    public String getDocumentNumber() { return documentNumber; }
+    public void setDocumentNumber(String documentNumber) { this.documentNumber = documentNumber; }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getLastName() {
-        return lastName;
-    }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
-    public String getDocumentType() {
-        return documentType;
-    }
+    public String getTaxCondition() { return taxCondition; }
+    public void setTaxCondition(String taxCondition) { this.taxCondition = taxCondition; }
 
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
-    }
+    public String getTenantId() { return tenantId; }
+    public void setTenantId(String tenantId) { this.tenantId = tenantId; }
 
-    public String getDocumentNumber() {
-        return documentNumber;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = documentNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getTaxCondition() {
-        return taxCondition;
-    }
-
-    public void setTaxCondition(String taxCondition) {
-        this.taxCondition = taxCondition;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
+    public List<User> getUsers() { return users; }
+    public void setUsers(List<User> users) { this.users = users; }
 }

@@ -10,29 +10,30 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
-
 
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "my-secret-key-which-should-be-very-long-and-secure"; // Debe ser segura
+    private static final String SECRET_KEY = "my-secret-key-which-should-be-very-long-and-secure";
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    public String generateToken(User userDetails, Long userId) {
+    public String generateToken(User user, Long userId, List<String> permissions) {
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getUsername())
                 .claim("id", userId)
-                .claim("name",userDetails.getPerson().getFirstName() + " " + userDetails.getPerson().getLastName())
-                .claim("user",userDetails.getUsername())
-                .claim("ownerId",userDetails.getPerson().getId())
-                .claim("tenantId", userDetails.getPerson().getTenantId())
-                .claim("roleId",userDetails.getRole())
+                .claim("name", user.getPerson().getFirstName() + " " + user.getPerson().getLastName())
+                .claim("user", user.getUsername())
+                .claim("ownerId", user.getPerson().getId())
+                .claim("tenantId", user.getPerson().getTenantId())
+                .claim("role", user.getRole().getName())
+                .claim("permissions", permissions)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 5)) // Expira en 1 hora
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 5))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
