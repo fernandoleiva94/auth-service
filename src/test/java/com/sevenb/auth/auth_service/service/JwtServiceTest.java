@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,7 +36,7 @@ class JwtServiceTest {
         user.setPerson(person);
         user.setRole(role);
 
-        String token = jwtService.generateToken(user, person.getId());
+        String token = jwtService.generateToken(user, person.getId(), List.of());
 
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)))
