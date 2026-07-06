@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+mvnw
+.idea/workspace.xml
+target/classes/com/sevenb/auth/auth_service/configuration/SecurityConfig.class
+target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+mvnw
+.idea/workspace.xml
+target/classes/com/sevenb/auth/auth_service/configuration/SecurityConfig.class
+target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
