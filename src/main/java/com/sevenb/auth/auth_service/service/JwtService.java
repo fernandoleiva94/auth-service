@@ -30,6 +30,7 @@ public class JwtService {
                 .claim("user", user.getUsername())
                 .claim("ownerId", user.getPerson().getId())
                 .claim("tenantId", user.getPerson().getTenantId())
+                .claim("taxCondition", user.getPerson().getTaxCondition())
                 .claim("role", user.getRole().getName())
                 .claim("permissions", permissions)
                 .setIssuedAt(new Date(System.currentTimeMillis()))

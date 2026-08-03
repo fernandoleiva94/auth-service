@@ -26,6 +26,7 @@ class JwtServiceTest {
         person.setFirstName("Fernando");
         person.setLastName("Perez");
         person.setTenantId("tenant-acme");
+        person.setTaxCondition("RESPONSABLE_INSCRIPTO");
 
         Role role = new Role();
         role.setId(1L);
@@ -45,6 +46,7 @@ class JwtServiceTest {
                 .getBody();
 
         assertEquals("tenant-acme", claims.get("tenantId", String.class));
+        assertEquals("RESPONSABLE_INSCRIPTO", claims.get("taxCondition", String.class));
     }
 }
 
