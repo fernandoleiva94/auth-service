@@ -3,6 +3,7 @@ package com.sevenb.auth.auth_service.controller;
 import com.sevenb.auth.auth_service.entity.AuthRequest;
 import com.sevenb.auth.auth_service.entity.AuthResponse;
 import com.sevenb.auth.auth_service.entity.User;
+import com.sevenb.auth.auth_service.exception.InvalidCredentialsException;
 import com.sevenb.auth.auth_service.service.JwtService;
 import com.sevenb.auth.auth_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class AuthController {
             List<String> permissions = userService.getEffectivePermissions(user);
             return new AuthResponse(jwtService.generateToken(user, user.getPerson().getId(), permissions));
         } catch (AuthenticationException e) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException();
         }
     }
 }
