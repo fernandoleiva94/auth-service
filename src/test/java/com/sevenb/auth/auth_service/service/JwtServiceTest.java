@@ -48,5 +48,35 @@ class JwtServiceTest {
         assertEquals("tenant-acme", claims.get("tenantId", String.class));
         assertEquals("RESPONSABLE_INSCRIPTO", claims.get("taxCondition", String.class));
     }
-}
 
+    @Test
+    void generateToken_shouldAvoidNullInNameClaimWhenLastNameIsMissing() {
+        JwtService jwtService = new JwtService();
+
+        Person person = new Person();
+        person.setId(100L);
+        person.setFirstName("Marcelo Raul Leiva");
+        person.setLastName(null);
+        person.setTenantId("tenant-abc");
+        person.setTaxCondition("RESPONSABLE_INSCRIPTO");
+
+        Role role = new Role();
+        role.setId(2L);
+        role.setName("ADMIN");
+
+        User user = new User();
+        user.setUsername("maspolloadmin");
+        user.setPerson(person);
+        user.setRole(role);
+
+        String token = jwtService.generateToken(user, person.getId(), List.of());
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        assertEquals("Marcelo Raul Leiva", claims.get("name", String.class));
+    }
+}

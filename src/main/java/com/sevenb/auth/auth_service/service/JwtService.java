@@ -26,7 +26,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("id", userId)
-                .claim("name", user.getPerson().getFirstName() + " " + user.getPerson().getLastName())
+                .claim("name", buildDisplayName(user))
                 .claim("user", user.getUsername())
                 .claim("ownerId", user.getPerson().getId())
                 .claim("tenantId", user.getPerson().getTenantId())
@@ -37,6 +37,35 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 5))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private String buildDisplayName(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        String username = user.getUsername();
+        if (user.getPerson() == null) {
+            return username;
+        }
+
+        String firstName = normalize(user.getPerson().getFirstName());
+        String lastName = normalize(user.getPerson().getLastName());
+
+        if (firstName.isEmpty() && lastName.isEmpty()) {
+            return username;
+        }
+        if (firstName.isEmpty()) {
+            return lastName;
+        }
+        if (lastName.isEmpty()) {
+            return firstName;
+        }
+        return firstName + " " + lastName;
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.trim();
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
