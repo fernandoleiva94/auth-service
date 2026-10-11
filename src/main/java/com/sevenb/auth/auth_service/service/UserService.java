@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,9 +33,12 @@ public class UserService implements UserDetailsService {
     }
 
     public List<String> getEffectivePermissions(User user) {
-        Set<String> permissions = user.getRole().getPermissions().stream()
-                .map(PermissionEntity::getCode)
-                .collect(Collectors.toSet());
+        Set<String> permissions = new HashSet<>();
+        if (user.getRole() != null) {
+            user.getRole().getPermissions().stream()
+                    .map(PermissionEntity::getCode)
+                    .forEach(permissions::add);
+        }
 
         List<UserPermissionOverride> overrides = overrideRepository.findByUserId(user.getId());
         for (UserPermissionOverride override : overrides) {

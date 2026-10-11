@@ -31,7 +31,7 @@ public class JwtService {
                 .claim("ownerId", user.getPerson().getId())
                 .claim("tenantId", user.getPerson().getTenantId())
                 .claim("taxCondition", user.getPerson().getTaxCondition())
-                .claim("role", user.getRole().getName())
+                .claim("role", user.getRole() != null ? user.getRole().getName() : null)
                 .claim("permissions", permissions)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 5))

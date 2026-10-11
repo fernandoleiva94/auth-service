@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JwtServiceTest {
 
@@ -78,5 +80,79 @@ class JwtServiceTest {
                 .getBody();
 
         assertEquals("Marcelo Raul Leiva", claims.get("name", String.class));
+    }
+
+    @Test
+    void generateToken_shouldIncludeRoleNameAndPermissionsList() {
+        JwtService jwtService = new JwtService();
+
+        Person person = new Person();
+        person.setId(101L);
+        person.setTenantId("tenant-xyz");
+
+        Role role = new Role();
+        role.setId(3L);
+        role.setName("CAJERO");
+
+        User user = new User();
+        user.setUsername("cajero1");
+        user.setPerson(person);
+        user.setRole(role);
+
+        String token = jwtService.generateToken(user, person.getId(), List.of("SALES_CREATE", "SALES_VIEW"));
+
+        Claims claims = parse(token);
+
+        assertEquals("CAJERO", claims.get("role", String.class));
+        assertEquals(List.of("SALES_CREATE", "SALES_VIEW"), claims.get("permissions", List.class));
+    }
+
+    @Test
+    void generateToken_shouldIncludeEmptyPermissionsListAsEmptyNotAbsent() {
+        JwtService jwtService = new JwtService();
+
+        Person person = new Person();
+        person.setId(102L);
+        person.setTenantId("tenant-xyz");
+
+        Role role = new Role();
+        role.setName("SIN_PERMISOS");
+
+        User user = new User();
+        user.setUsername("vacio");
+        user.setPerson(person);
+        user.setRole(role);
+
+        Claims claims = parse(jwtService.generateToken(user, person.getId(), List.of()));
+
+        assertTrue(claims.containsKey("permissions"));
+        assertEquals(List.of(), claims.get("permissions", List.class));
+    }
+
+    @Test
+    void generateToken_withoutRole_shouldOmitRoleClaimAndKeepPermissions() {
+        JwtService jwtService = new JwtService();
+
+        Person person = new Person();
+        person.setId(103L);
+        person.setTenantId("tenant-xyz");
+
+        User user = new User();
+        user.setUsername("sinrol");
+        user.setPerson(person);
+
+        Claims claims = parse(jwtService.generateToken(user, person.getId(), List.of("SALES_VIEW")));
+
+        assertNull(claims.get("role"));
+        assertEquals(List.of("SALES_VIEW"), claims.get("permissions", List.class));
+        assertEquals("tenant-xyz", claims.get("tenantId", String.class));
+    }
+
+    private Claims parse(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
