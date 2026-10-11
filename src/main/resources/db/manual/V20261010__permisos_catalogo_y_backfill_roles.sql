@@ -79,4 +79,55 @@ WHERE UPPER(r.name) = 'CAJERO'
       WHERE rp.role_id = r.id AND rp.permission_code = 'SALES_AFIP_RETRY'
   );
 
+-- 6) Roles personalizados (nombre distinto de ADMIN, SUPERVISOR y CAJERO).
+--    Criterio: cada permiso nuevo se deriva del permiso existente que ya cubría esa pantalla o
+--    acción, para que nadie pierda acceso cuando el chequeo deje el modo sombra:
+--      SUPPLIERS_EDIT       -> PURCHASES_VIEW, PURCHASES_EDIT, PURCHASES_CONFIRM, SUPPLIERS_ACCOUNT_MANAGE
+--      SUPPLIERS_VIEW       -> PURCHASES_VIEW
+--      PRODUCTS_EDIT        -> STOCK_VIEW, STOCK_ADJUST
+--      PRODUCTS_VIEW        -> STOCK_VIEW
+--      CLIENTS_EDIT         -> CLIENTS_ACCOUNT_MANAGE
+--      SALES_VIEW           -> SALES_EXPORT, SALES_AFIP_RETRY
+--    Nunca se derivan USERS_MANAGE ni ROLES_MANAGE.
+INSERT INTO role_permissions (role_id, permission_code)
+SELECT DISTINCT r.id, m.target_code
+FROM roles r
+JOIN role_permissions src ON src.role_id = r.id
+JOIN (VALUES
+    ('SUPPLIERS_EDIT', 'PURCHASES_VIEW'),
+    ('SUPPLIERS_EDIT', 'PURCHASES_EDIT'),
+    ('SUPPLIERS_EDIT', 'PURCHASES_CONFIRM'),
+    ('SUPPLIERS_EDIT', 'SUPPLIERS_ACCOUNT_MANAGE'),
+    ('SUPPLIERS_VIEW', 'PURCHASES_VIEW'),
+    ('PRODUCTS_EDIT',  'STOCK_VIEW'),
+    ('PRODUCTS_EDIT',  'STOCK_ADJUST'),
+    ('PRODUCTS_VIEW',  'STOCK_VIEW'),
+    ('CLIENTS_EDIT',   'CLIENTS_ACCOUNT_MANAGE'),
+    ('SALES_VIEW',     'SALES_EXPORT'),
+    ('SALES_VIEW',     'SALES_AFIP_RETRY')
+) AS m(source_code, target_code) ON m.source_code = src.permission_code
+WHERE UPPER(r.name) NOT IN ('ADMIN', 'SUPERVISOR', 'CAJERO')
+  AND NOT EXISTS (
+      SELECT 1 FROM role_permissions rp
+      WHERE rp.role_id = r.id AND rp.permission_code = m.target_code
+  );
+
+--    CASH_SESSIONS_MANAGE + REPORTS_VIEW -> CASH_HISTORY_VIEW (requiere ambos).
+INSERT INTO role_permissions (role_id, permission_code)
+SELECT r.id, 'CASH_HISTORY_VIEW'
+FROM roles r
+WHERE UPPER(r.name) NOT IN ('ADMIN', 'SUPERVISOR', 'CAJERO')
+  AND EXISTS (
+      SELECT 1 FROM role_permissions rp
+      WHERE rp.role_id = r.id AND rp.permission_code = 'CASH_SESSIONS_MANAGE'
+  )
+  AND EXISTS (
+      SELECT 1 FROM role_permissions rp
+      WHERE rp.role_id = r.id AND rp.permission_code = 'REPORTS_VIEW'
+  )
+  AND NOT EXISTS (
+      SELECT 1 FROM role_permissions rp
+      WHERE rp.role_id = r.id AND rp.permission_code = 'CASH_HISTORY_VIEW'
+  );
+
 COMMIT;
