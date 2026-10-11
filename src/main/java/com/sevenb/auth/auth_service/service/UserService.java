@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService {
 
+    private static final String PLATFORM_PREFIX = "PLATFORM_";
+
     private final UserRepository userRepository;
     private final UserPermissionOverrideRepository overrideRepository;
 
@@ -32,11 +34,16 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    /**
+     * Los códigos {@code PLATFORM_*} nunca se toman del rol: solo cuentan si vienen de un override
+     * concedido al usuario.
+     */
     public List<String> getEffectivePermissions(User user) {
         Set<String> permissions = new HashSet<>();
         if (user.getRole() != null) {
             user.getRole().getPermissions().stream()
                     .map(PermissionEntity::getCode)
+                    .filter(code -> code != null && !code.startsWith(PLATFORM_PREFIX))
                     .forEach(permissions::add);
         }
 

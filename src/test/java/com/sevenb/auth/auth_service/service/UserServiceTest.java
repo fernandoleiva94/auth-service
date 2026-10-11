@@ -57,4 +57,46 @@ class UserServiceTest {
 
         assertEquals(List.of("SALES_VIEW"), userService.getEffectivePermissions(user));
     }
+
+    @Test
+    void getEffectivePermissions_ignoresPlatformCodesFromRole() {
+        Role role = new Role();
+        role.setName("ADMIN");
+        role.setPermissions(Set.of(permission("USERS_MANAGE"), permission("PLATFORM_ADMIN")));
+
+        User user = new User();
+        user.setId(7L);
+        user.setRole(role);
+        when(overrideRepository.findByUserId(7L)).thenReturn(List.of());
+
+        assertEquals(List.of("USERS_MANAGE"), userService.getEffectivePermissions(user));
+    }
+
+    @Test
+    void getEffectivePermissions_includesPlatformCodesFromGrantedOverride() {
+        Role role = new Role();
+        role.setName("ADMIN");
+        role.setPermissions(Set.of(permission("USERS_MANAGE")));
+
+        User user = new User();
+        user.setId(8L);
+        user.setRole(role);
+        when(overrideRepository.findByUserId(8L)).thenReturn(List.of(override("PLATFORM_ADMIN", true)));
+
+        assertEquals(List.of("PLATFORM_ADMIN", "USERS_MANAGE"), userService.getEffectivePermissions(user));
+    }
+
+    @Test
+    void getEffectivePermissions_revokedPlatformOverrideIsNotIncluded() {
+        Role role = new Role();
+        role.setName("ADMIN");
+        role.setPermissions(Set.of(permission("USERS_MANAGE"), permission("PLATFORM_ADMIN")));
+
+        User user = new User();
+        user.setId(9L);
+        user.setRole(role);
+        when(overrideRepository.findByUserId(9L)).thenReturn(List.of(override("PLATFORM_ADMIN", false)));
+
+        assertEquals(List.of("USERS_MANAGE"), userService.getEffectivePermissions(user));
+    }
 }
