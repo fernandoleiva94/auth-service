@@ -35,12 +35,15 @@ SET description = 'Ver ventas'
 WHERE code = 'SALES_VIEW'
   AND description IS DISTINCT FROM 'Ver ventas';
 
--- 3) ADMIN: todos los códigos de la tabla permissions.
+-- 3) ADMIN: todos los códigos de la tabla permissions, excepto PLATFORM_*.
+--    PLATFORM_* nunca se asigna por rol (solo por override); este script manual se puede volver
+--    a ejecutar después de V20261011__platform_admin.sql y no debe reasignarlo a ADMIN.
 INSERT INTO role_permissions (role_id, permission_code)
 SELECT r.id, p.code
 FROM roles r
 CROSS JOIN permissions p
 WHERE UPPER(r.name) = 'ADMIN'
+  AND p.code NOT LIKE 'PLATFORM\_%'
   AND NOT EXISTS (
       SELECT 1 FROM role_permissions rp
       WHERE rp.role_id = r.id AND rp.permission_code = p.code
